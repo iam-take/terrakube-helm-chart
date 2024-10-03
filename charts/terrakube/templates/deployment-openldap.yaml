@@ -20,16 +20,24 @@ spec:
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/secret-openldap.yaml") . | sha256sum }}
     spec:
+      {{- with .Values.openldap.imagePullSecrets | default .Values.global.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.openldap.initContainers }}
+      initContainers:
+        {{- toYaml . | nindent 6 }}
+      {{- end }}
       containers:
       - name: terrakube-openldap
-        image: bitnami/openldap:2.6.4-debian-11-r4
+        image: {{ .Values.openldap.image }}:{{ .Values.openldap.version }}
         env:
         - name: LDAP_ADMIN_USERNAME
-          value: "admin"
+          value: {{ .Values.openldap.adminUser }}
         - name: LDAP_ADMIN_PASSWORD
-          value: "admin"
+          value: {{ .Values.openldap.adminPass }}
         - name: LDAP_ROOT
-          value: "dc=example,dc=org"
+          value: {{ .Values.openldap.baseRoot }}
         - name: LDAP_CUSTOM_LDIF_DIR
           value: "/ldifs"
         ports:

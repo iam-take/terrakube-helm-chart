@@ -231,6 +231,7 @@ Once you have completed the above steps you can complete the file values.yaml to
 | Key                                       | Required | Description                                                            |
 |:------------------------------------------|----------|------------------------------------------------------------------------|
 | name                                      | Yes      | Use "Terrakube"                                                        |
+| global.imagePullSecrets                   | No       | Global Secret used to pull images from private repository              |
 | security.adminGroup                       | Yes      | Admin group inside Terrakube                                           |
 | security.patSecret                        | Yes      | 32 Character secret to sign personal access token                      |
 | security.internalSecret                   | Yes      | 32 Character secret to sing internal                                   |
@@ -238,6 +239,16 @@ Once you have completed the above steps you can complete the file values.yaml to
 | security.dexClientScope                   | Yes      | Use "email openid profile offline_access groups"                       |
 | security.gcpCredentials                   | No       | JSON Credentials for Google Identity Authentication                    |
 | security.caCerts                          | No       | Custom CA certificates to be added at runtime                          |
+| openldap.adminUser                        | Yes      | LDAP deployment admin user                                             |
+| openldap.adminPass                        | Yes      | LDAP deployment admin password                                         |
+| openldap.baseRoot                         | Yes      | LDAP baseDN (or suffix) of the LDAP tree                               |
+| openldap.image                            | Yes      | LDAP deployment image repository                                       |
+| openldap.version                          | Yes      | LDAP deployment image tag                                              |
+| openldap.imagePullSecrets                 | No       | Secret used to pull images from private repository                     |
+| openldap.initContainers                   | No       | Init containers for LDAP deployment                                    |
+| openldap.podLabels                        | No       | Pod labels for LDAP deployment                                         |
+| openldap.securityContext                  | No       | Security context for LDAP deployment                                   |
+| openldap.containerSecurityContext         | No       | Container security context for LDAP deployment                         |
 | storage.defaultStorage                    | No       | Enable default storage using minio helm chart                          |
 | storage.gcp.projectId                     | No       | GCP Project Id for the storage                                         |
 | storage.gcp.bucketName                    | No       | GCP Bucket name for the storage                                        |
@@ -273,6 +284,8 @@ Once you have completed the above steps you can complete the file values.yaml to
 | api.properties.databasePassword           | No       |                                                                        |
 | api.securityContext                       | No       | Fill securityContext field                                             |
 | api.containerSecurityContext              | No       | Fill securityContext field in the container spec                       |
+| api.imagePullSecrets                      | No       | Specific Secret used to pull images from private repository            |
+| api.initContainers                        | No       | Init containers for API deployment                                     |
 | executor.enabled                          | Yes      | true/false                                                             |
 | executor.image                            | No       | Executor image repository                                              |
 | executor.version                          | Yes      | Terrakube Executor version                                             |
@@ -286,6 +299,8 @@ Once you have completed the above steps you can complete the file values.yaml to
 | executor.properties.toolsBranch           | Yes      | Example: main                                                          |
 | executor.securityContext                  | No       | Fill securityContext field                                             |
 | executor.containerSecurityContext         | No       | Fill securityContext field in the container spec                       |
+| executor.imagePullSecrets                 | No       | Specific Secret used to pull images from private repository            |
+| executor.initContainers                   | No       | Init containers for executor deployment                                |
 | registry.enabled                          | Yes      |                                                                        |
 | registry.image                            | No       | Registry image repository                                              |
 | registry.version                          | Yes      |                                                                        |
@@ -297,6 +312,8 @@ Once you have completed the above steps you can complete the file values.yaml to
 | registry.volumeMounts                     | No       |                                                                        |
 | registry.securityContext                  | No       | Fill securityContext field                                             |
 | registry.containerSecurityContext         | No       | Fill securityContext field in the container spec                       |
+| registry.imagePullSecrets                 | No       | Specific Secret used to pull images from private repository            |
+| registry.initContainers                   | No       | Init containers for registry deployment                                |
 | ui.enabled                                | Yes      | true/false                                                             |
 | ui.image                                  | No       | UI image repository                                                    |
 | ui.version                                | Yes      |                                                                        |
@@ -305,6 +322,8 @@ Once you have completed the above steps you can complete the file values.yaml to
 | ui.serviceType                            | Yes      | ClusterIP/NodePort/LoadBalancer/ExternalName                           |
 | ui.securityContext                        | No       | Fill securityContext field                                             |
 | ui.containerSecurityContext               | No       | Fill securityContext field in the container spec                       |
+| ui.imagePullSecrets                       | No       | Specific Secret used to pull images from private repository            |
+| ui.initContainers                         | No       | Init containers for UI deployment                                      |
 | ingress.ui.ingressClassName               | Yes      | Default is set to nginx                                                |
 | ingress.ui.useTls                         | Yes      | true/false                                                             |
 | ingress.ui.enabled                        | Yes      | true/false                                                             |

@@ -1,6 +1,9 @@
 ## Global Name
 name: "terrakube"
 
+global:
+  imagePullSecrets: []
+
 ## Azure Active Directory Security
 security:
   useOpenLDAP: true
@@ -15,6 +18,13 @@ security:
 
 ## OpenLdap
 openldap:
+  adminUser: "admin"
+  adminPass: "admin"
+  baseRoot: "dc=example,dc=org"
+  image: "bitnami/openldap"
+  version: "2.6.4-debian-11-r4"
+  imagePullSecrets: []
+  initContainers: []
   podLabels: {}
   securityContext: {}
   containerSecurityContext: {}
@@ -168,6 +178,12 @@ api:
   replicaCount: "1"
   serviceType: "ClusterIP"
   serviceAccountName: ""
+  rbac:
+    create: false
+    roleName: "terrakube-api-role"
+    roleBindingName: "terrakube-api-role-binding"
+  secrets:
+   - terrakube-api-secrets
   resources: {}
   podLabels: {}
   defaultDatabase: true
@@ -176,6 +192,8 @@ api:
   terraformReleasesUrl: "https://releases.hashicorp.com/terraform/index.json"
   securityContext: {}
   containerSecurityContext: {}
+  imagePullSecrets: []
+  initContainers: []
   cache:
     moduleCacheMaxTotal: "128"
     moduleCacheMaxIdle: "128"
@@ -209,14 +227,20 @@ executor:
   replicaCount: "1"
   serviceType: "ClusterIP"
   serviceAccountName: ""
+  secrets:
+   - terrakube-executor-secrets
   resources: {}
   podLabels: {}
+  podAnnotations: {}
   apiServiceUrl: "http://terrakube-api-service:8080"
   properties:
     toolsRepository: "https://github.com/AzBuilder/terrakube-extensions"
     toolsBranch: "main"
   securityContext: {}
   containerSecurityContext: {}
+  imagePullSecrets: []
+  initContainers: []
+
 ## Registry properties
 registry:
   enabled: true
@@ -226,10 +250,14 @@ registry:
   replicaCount: "1"
   serviceType: "ClusterIP"
   serviceAccountName: ""
+  secrets:
+   - terrakube-registry-secrets
   resources: {}
   podLabels: {}
   securityContext: {}
   containerSecurityContext: {}
+  imagePullSecrets: []
+  initContainers: []
 
 ## UI Properties
 ui:
@@ -244,6 +272,8 @@ ui:
   podLabels: {}
   securityContext: {}
   containerSecurityContext: {}
+  imagePullSecrets: []
+  initContainers: []
 
 ## Ingress properties
 ingress:

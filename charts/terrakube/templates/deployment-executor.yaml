@@ -19,7 +19,18 @@ spec:
         {{- end }}
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/secrets-executor.yaml") . | sha256sum }}
+        {{- with .Values.executor.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
     spec:
+      {{- with .Values.executor.imagePullSecrets | default .Values.global.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.executor.initContainers }}
+      initContainers:
+        {{- toYaml . | nindent 6 }}
+      {{- end }}
       containers:
       - name: terrakube-executor
         image: {{ .Values.executor.image }}:{{ default .Chart.AppVersion .Values.executor.version }}
@@ -37,8 +48,10 @@ spec:
             {{- toYaml . | nindent 12 }}
           {{- end }}
         envFrom:
-        - secretRef:
-            name: terrakube-executor-secrets
+        {{- range .Values.executor.secrets }}
+            - secretRef:
+                name: {{ . | quote }}
+        {{- end }}
         startupProbe:
           httpGet:
             path: /actuator/health

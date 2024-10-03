@@ -20,6 +20,14 @@ spec:
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/secrets-api.yaml") . | sha256sum }}
     spec:
+      {{- with .Values.api.imagePullSecrets | default .Values.global.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.api.initContainers }}
+      initContainers:
+        {{- toYaml . | nindent 6 }}
+      {{- end }}
       containers:
       - name: terrakube-api
         image: {{ .Values.api.image }}:{{ default .Chart.AppVersion .Values.api.version }}
@@ -37,8 +45,10 @@ spec:
             {{- toYaml . | nindent 12 }}
           {{- end }}
         envFrom:
-        - secretRef:
-            name: terrakube-api-secrets
+        {{- range .Values.api.secrets }}
+            - secretRef:
+                name: {{ . | quote }}
+        {{- end }}
         startupProbe:
           httpGet:
             path: /actuator/health
